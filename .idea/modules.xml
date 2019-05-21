@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/CixAuth/CixAuth.iml" filepath="$PROJECT_DIR$/CixAuth/CixAuth.iml" />
+      <module fileurl="file://$PROJECT_DIR$/CixModel/CixModel.iml" filepath="$PROJECT_DIR$/CixModel/CixModel.iml" />
+      <module fileurl="file://$PROJECT_DIR$/CixReaderJ.iml" filepath="$PROJECT_DIR$/CixReaderJ.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Utility/Utility.iml" filepath="$PROJECT_DIR$/Utility/Utility.iml" />
+    </modules>
+  </component>
+</project>
