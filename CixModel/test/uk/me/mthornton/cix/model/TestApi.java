@@ -10,6 +10,7 @@ import org.junit.jupiter.api.TestInstance;
 import uk.me.mthornton.cix.auth.CixAuthentication;
 import uk.me.mthornton.cix.auth.ClientCredentials;
 import uk.me.mthornton.net.http.Http;
+import uk.me.mthornton.utility.ApplicationConfiguration;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -25,19 +26,21 @@ import java.util.concurrent.ExecutionException;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class TestApi {
-    private static final String USER = "mthorn";
     private HttpClient client;
     private CixAuthentication authentication;
     private Gson gson;
+    private String user;
 
     @BeforeAll public void setup() {
+        ApplicationConfiguration configuration = new ApplicationConfiguration(ClientCredentials.getApplicationId());
+        user = configuration.get(ClientCredentials.getUserProperty(), String.class);
         client = HttpClient.newHttpClient();
         authentication = new CixAuthentication(client);
         gson = Converters.registerAll(new GsonBuilder()).create();
     }
 
     @Test public void getSubscribedForums() throws ExecutionException, InterruptedException {
-        CompletionStage<HttpResponse<String>> requestAsync = authentication.getAuthenticationToken(USER).thenCompose(token -> {
+        CompletionStage<HttpResponse<String>> requestAsync = authentication.getAuthenticationToken(user).thenCompose(token -> {
             // BASIC does not return topics, moderators or participants
             URI uri = URI.create(ClientCredentials.getCixApiUrl().concat("/v3.0/User/subscriptions/BASIC"));
             HttpRequest.Builder builder = HttpRequest.newBuilder(uri);
@@ -52,7 +55,7 @@ public class TestApi {
     }
 
     @Test public void streamSubscribedForums()  throws ExecutionException, InterruptedException {
-        CompletionStage<HttpResponse<InputStream>> requestAsync = authentication.getAuthenticationToken(USER).thenCompose(token -> {
+        CompletionStage<HttpResponse<InputStream>> requestAsync = authentication.getAuthenticationToken(user).thenCompose(token -> {
             // BASIC does not return topics, moderators or participants
             URI uri = URI.create(ClientCredentials.getCixApiUrl().concat("/v3.0/User/subscriptions/BASIC"));
             HttpRequest.Builder builder = HttpRequest.newBuilder(uri);

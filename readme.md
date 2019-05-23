@@ -2,8 +2,9 @@
 
 Currently in very preliminary stages.
 
-The tests tend to use my own cix account (though the password is NOT in this code). Passwords and other secrets are 
-managed by the Secrets class. The secrets are encrypted using AES with a master key.
+Configuration data is stored (on Linux) in <home>/.config/uk.me.mthornton/CixReaderJ.json. Passwords are stored separately (AES encrypted).
+Set configure your own user name and password, run the uk.me.mthornton.cix.auth.SetCixCredentials application. This will then be
+used by any tests requiring it.
 
 The StandardPaths class is used to locate configuration and data files in OS appropriate locations.
 Currently only has a Linux implementation.

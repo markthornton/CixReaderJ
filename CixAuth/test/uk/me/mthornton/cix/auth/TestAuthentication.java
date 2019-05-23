@@ -6,6 +6,7 @@ import org.junit.jupiter.api.TestInstance;
 import uk.me.mthornton.net.http.FormUrlEncodedContent;
 import uk.me.mthornton.net.http.Http;
 import uk.me.mthornton.secrets.Secrets;
+import uk.me.mthornton.utility.ApplicationConfiguration;
 
 import java.io.IOException;
 import java.net.URI;
@@ -18,7 +19,6 @@ import java.util.Map;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class TestAuthentication {
-    private static final String USER = "mthorn";
     private HttpClient client;
     private OpenIdDiscovery discovery;
     private Secrets secrets;
@@ -26,17 +26,19 @@ public class TestAuthentication {
     @BeforeAll public void setup() {
         client = HttpClient.newHttpClient();
         discovery = new OpenIdDiscovery(client, ClientCredentials.getCixApiUrl());
-        secrets = Secrets.getSecrets("CIX");
+        secrets = Secrets.getSecrets(ClientCredentials.getSecretContext());
     }
 
     @Test
     public void getToken() throws IOException, InterruptedException {
+        ApplicationConfiguration configuration = new ApplicationConfiguration(ClientCredentials.getApplicationId());
+        String user = configuration.get(ClientCredentials.getUserProperty(), String.class);
 
         Map<String,String> fields = new HashMap<>();
         fields.put("grant_type", "password");
         fields.put("scope", "cixApi3");
-        fields.put("username", USER);
-        fields.put("password", secrets.getSecretString(USER));
+        fields.put("username", user);
+        fields.put("password", secrets.getSecretString(user));
         HttpRequest.Builder builder = HttpRequest.newBuilder(URI.create(discovery.getConfiguration().getTokenEndpoint()));
         builder.header(Http.CONTENT_TYPE, FormUrlEncodedContent.CONTENT_TYPE);
         builder.header(Http.AUTHORIZATION, Http.basicAuthorization(ClientCredentials.getClientId(), ClientCredentials.getClientSecret()));
